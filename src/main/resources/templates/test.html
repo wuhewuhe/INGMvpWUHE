@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" >
+    <title>Title</title>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th> card number </th>
+        <th> idaccount </th>
+        <th> balance </th>
+        <th> bankid </th>
+        <th> userid </th>
+        <th> password </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="acc : ${listAccounts}">
+        <td><span th:text="${acc.getCardnumber()}">  </span></td>
+        <td><span th:text="${acc.getAccountid()}">  </span></td>
+        <td><span th:text="${acc.getbalance()}"> Author </span></td>
+        <td><span th:text="${acc.getbankid()}"> Author </span></td>
+        <td><span th:text="${acc.getuserid()}"> Author </span></td>
+        <td><span th:text="${acc.getpassword()}"> Author </span></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

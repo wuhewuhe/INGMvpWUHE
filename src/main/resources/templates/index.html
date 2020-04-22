@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<br lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+Welcom to ING Account Management
+<span>account services</span>
+</br>
+<a href="/ING/accounts/listall"><button>list all accounts</button></a>
+</br>
+<h2>check accounts by client id</h2>
+<form action="/ING/accounts/listbyuser" method="GET">
+    <label>intput cliend id</label><br>
+    <input type="text" id="userid" name="userid" value="444"><br>
+    <input type="submit" value="Submit">
+</form>
+</br>
+<h2>check informations by accountid</h2>
+<form action="/ING/accounts/info" method="GET">
+    <label>intput account id</label><br>
+    <input type="text" name="accountid" value="1"><br>
+    <input type="submit" value="Submit">
+</form>
+</br>
+<a href="/ING/transactions/listAll"><button>check all transactions</button></a>
+</br>
+<h2>find constraction by send id</h2>
+<form action="/ING/transactions/findBySenderId" method="GET">
+    <label>intput account id</label><br>
+    <input type="text" name="idaccount" value="1"><br>
+    <input type="submit" value="Submit">
+</form>
+</br>
+<h2>find constraction by receive id</h2>
+<form action="/ING/transactions/findByReceiverId" method="GET">
+    <label>intput account id</label><br>
+    <input type="text" name="idaccount" value="1"><br>
+    <input type="submit" value="Submit">
+</form>
+</br>
+<h2>find transactions by type</h2>
+<form action="/ING/transactions/findByTransType" method="GET">
+    <label>intput account id</label><br>
+    <input type="text"  name="ta_type" value="1"><br>
+    <input type="submit" value="Submit">
+</form>
+</br>
+<h2>deposit money</h2>
+<form method="POST" action="/ING/accounts/deposit">
+    <label>intput account id</label><br>
+    <input type="text" name="id" value="1"><br>
+    <label>intput money</label><br>
+    <input type="text" name="money" value="100.00"><br>
+    <input type="submit" value="Submit" method="PUT">
+</form>
+</br>
+<h2>withdraw money</h2>
+<form action="/ING/accounts/withdraw" method="POST">
+    <label>intput account id</label><br>
+    <input name="id" value="1"><br>
+    <label>intput money</label><br>
+    <input type="text" name="money" value="100.00"><br>
+    <input type="submit" value="Submit" method="PUT">
+</form>
+</br>
+<h2>transfer money</h2>
+<form action="/ING/accounts/transfer" method="POST">
+    <label>intput account id</label><br>
+    <input type="text"  name="id" value="1"><br>
+    <label>intput money</label><br>
+    <input type="text"  name="money" value="10.00"><br>
+    <label>intput another account id</label><br>
+    <input type="text"  name="otherid" value="2"><br>
+    <input type="submit" value="Submit">
+</form>
+
+
+</body>
+</html>
