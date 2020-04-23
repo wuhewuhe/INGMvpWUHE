@@ -1,7 +1,14 @@
+### Introduction of my MVP project
+how could you test and see my MVP project, you can build and run my projet by maven
+
+then go to this url http://localhost:8080/ING/, you will see all my api in this page
+
+**may be the interface is so ugly, s'im sorry, i did this just easy for you to test**
+
 ### Contraintes techniques
 
 * Java 8 
-* Springboot jaa
+* Springboot jpa
 * intellij
 * Mysql
 * Hibernate
@@ -15,98 +22,53 @@
 
 ### Database Structure
 
-Clients (id, userid, realname, sex, age, passport)
+Clients (id, clientid, realname, sex, age)
 
-Accounts (accounted, balance, bankid, card number,password,userid)
+Accounts (accountid, balance, bankid, card number,password, clientid)
 
-Bank(id,name,address)
+Bank(bankid,name,address)
 
 Transaction_log(id, senderaccountid, receiveaccountid, senderbankid,receivebankid, datetime, money, transfermoney, transfertype)
 
+**i dump my mysql schema to the diretocry of Dump20200423**
+
 ### General Architecture 
 
-Four dev packages : Bean,DAO,Service,Controller
+front : html, thymelaf 
 
-Threes test packages: ServicesTest, ControllerTest, MockTest
+backend : spring boot + jpa + hibernate 
 
-## Le Kata how to realise your conditions
+database : mysql, innodb5
 
-### Minimum Valuable Product
+test : postman, mock, assetj (test unitaire and integrate)
 
-#### User Story 1
+### Step to test
 
-> En tant que banque, j'accepte le dépôt d'argent d'un client vers son compte s'il est supérieur à 0,01€
+- create bank, client and client 
 
-Realise: 
+Condition: 
 
-- define balance by bigdecimal(18,2)
-- when client want to deposit money, i will compare it with 0.01. if right, i will update account return a json
+1 bank name can not duplicate, bankid is primary key 
 
-#### User Story 2
+2 client has a client id which is unique 
 
-> En tant que banque, j'accepte le retrait d'argent d'un client depuis son compte si le solde ne devient pas négatif
+3 account has relationship with bank and client by clientid and bankid, if they are not exist, they will return a bad request. **one client can hold many cards of differents bank, bank each account has a unqiue card number and corresponds to one bank
 
-- Compare withdraw monet to your solde, if withdraw money doesn't overpass the solde, update account and return son
+- deposit money 
 
-#### User Story 3
+condition : money shoud super than 0.01 and account id should exist
 
-> En tant que banque, j'offre la possibilité à mon client de consulter le solde de son compte
+- withdraw money 
 
-- Find solde by account id
+condition : money should not overpass solde and account id should exist 
 
-#### User Story 4
+- Transfer money
 
-> En tant que banque, j'offre la possibilité à mon client de consulter l'historique des transactions sur son compte
+condition : sender account id and receiver account id must exist and transfer money should not overpass the solde of send account deposit 
 
-- define a static map to save  deposit : 1, withdraw :2 and transfer : 3
+- transaction 
 
-  Transfer
+there are three types of transaction : deposit, withdraw and transfer 
 
-- when account transfer money to another account, i should verify the account is right or not, and then make sure the transfer money doesn't overpass the solde. Then update theses two accounts and record this transaction to table
+you can see the histories of transcation by sender id, receiver id and transfer type
 
-  Deposit 
-
-  Withdraw 
-
-### Features bonus
-
-Les fonctionnalités suivantes sont optionnelles et non exhaustives.  
-Elles n'ont pas de priorité entre elles, vous pouvez implémenter celles qui vous intéressent ou même en proposer d'autres.
-
-#### API REST
-
-- i choose REST and test all of my requests in Postman and by joints too
-
-#### Clients & Comptes
-
-- clients : accounts = 1 : N
-
-* each clients has many accounts, but one account is hold only by one clients. 
-
-* Bank : accounts = 1 : N
-
-  
-
-#### Persistence
-
-* Proposer une solution de persistence des données
-
-I use JPA and hibernate to persistent the data in mysql database
-
-#### UI
-
-* Proposer une interface graphique pour interagir avec les services réalisés dans le MVP
-
-i made a simple interface by themeleaf, this part i didn't avance so much, bur if you need, i can do it quickly
-
-
-
-#### Build
-
-* Utiliser Gradle au lieu de Maven
-
-i choose Maven
-
-* Proposer des tests End to End à destination de votre livrable
-
-i did test by junit and mock to test services. Two principals way : integrate and continus .
