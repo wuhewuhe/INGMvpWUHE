@@ -1,5 +1,6 @@
 package ing.am.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ing.am.bean.account;
 import ing.am.bean.transaction_log;
 import ing.am.service.AccountService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/accounts")
@@ -33,7 +35,7 @@ public class AccountController {
 
 
     @GetMapping("/test")
-    public String test(Model model){
+    public String test(Model model) {
         List<account> listAccounts = accountService.listAll();
         for (account a : listAccounts) System.out.println(a.getAccountid());
         model.addAttribute("listAccounts", listAccounts);
@@ -91,36 +93,45 @@ public class AccountController {
     //update account
     @PutMapping("/update/{id}")
     @ResponseBody
-    public account update(@PathVariable("id") Integer id,
-                          @RequestParam(value = "money") BigDecimal money) {
-        account acc = accountService.get(id);
-        BigDecimal bd = new BigDecimal("0.01");
-        if (money.compareTo(bd) > 0) {
-            acc.setBalance(money);
-            return accountService.update(acc);
+    public String update(@PathVariable("id") Integer id,
+                         @RequestParam(value = "money") BigDecimal money) {
+        Optional<account> acc = accountService.get(id);
+        if (acc.isPresent()) {
+            account temp = acc.get();
+            BigDecimal bd = new BigDecimal("0.01");
+            if (money.compareTo(bd) > 0) {
+                temp.setBalance(money);
+                accountService.update(temp);
+                return temp.toString();
+            }
         }
-        return null;
+        return "please verify your input id";
     }
 
     //find account by id
     @GetMapping("/{accountid}")
     @ResponseBody
-    public account findById(@PathVariable("accountid") Integer accountid) {
-        return accountService.get(accountid);
+    public String findById(@PathVariable("accountid") Integer accountid) {
+        Optional<account> acc = accountService.get(accountid);
+        if (acc.isPresent()) {
+            return acc.get().toString();
+        } else {
+            return "please verify your input id";
+        }
     }
 
     //find account by id
     @GetMapping("/info")
     @ResponseBody
-    public account findByIdFront(@RequestParam(value = "accountid") Integer accountid) {
-        return accountService.get(accountid);
+    public String findByIdFront(@RequestParam(value = "accountid") Integer accountid) {
+        return accountService.get(accountid).toString();
     }
 
     //find solde by id
     @GetMapping("/solde/{accountid}")
     @ResponseBody
     public String findSoldeById(@PathVariable("accountid") Integer accountid) {
-        account acc = accountService.get(accountid);
+        account acc = accountService.get(accountid).get();
         return acc.getBalance().toString();
     }
 
@@ -135,125 +146,146 @@ public class AccountController {
     //update account by id, choice 1 : save money
     @PostMapping("/deposit/{id}")
     @ResponseBody
-    public account deposit(@PathVariable("id") Integer id,
-                           @RequestParam(value = "money") BigDecimal money) {
-        account acc = accountService.get(id);
-        BigDecimal bd = new BigDecimal("0.01");
-        if (money.compareTo(bd) > 0) {
-            //deposit money
-            acc.setBalance(acc.getBalance().add(money));
+    public String deposit(@PathVariable("id") Integer id,
+                          @RequestParam(value = "money") BigDecimal money) {
+        Optional<account> optional = accountService.get(id);
+        if (optional.isPresent()) {
+            BigDecimal bd = new BigDecimal("0.01");
+            account acc = optional.get();
+            if (money.compareTo(bd) > 0) {
+                //deposit money
+                acc.setBalance(acc.getBalance().add(money));
 
-            //record in table of transaction
-            transaction_log transLog = new transaction_log();
-            int number = (int) transactionsService.count();
-            transLog.setId(++number);
-            transLog.setAccoundid(id);
-            transLog.setOtherid(id);
-            transLog.setSenderbankid(acc.getBankid());
-            transLog.setReceiverbankid(acc.getBankid());
-            transLog.setTr_money(money);
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            transLog.setDatetime(timestamp);
-            transLog.setTa_type(1);
-            transactionsService.update(transLog);
-            System.out.println(transLog);
+                //record in table of transaction
+                transaction_log transLog = new transaction_log();
+                int number = (int) transactionsService.count();
+                transLog.setId(++number);
+                transLog.setAccoundid(id);
+                transLog.setOtherid(id);
+                transLog.setSenderbankid(acc.getBankid());
+                transLog.setReceiverbankid(acc.getBankid());
+                transLog.setTr_money(money);
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                transLog.setDatetime(timestamp);
+                transLog.setTa_type(1);
+                transactionsService.update(transLog);
+                System.out.println(transLog);
 
-            return accountService.update(acc);
+                return accountService.update(acc).toString();
+            } else {
+                return "please verify your input money super than 0.01";
+            }
         }
-        return null;
+        return "please verify your input id";
     }
 
     @PostMapping("/deposit")
     @ResponseBody
-    public account depositFront(@RequestParam(value = "id") int id,
-                           @RequestParam(value = "money") BigDecimal money) {
-        account acc = accountService.get(id);
-        BigDecimal bd = new BigDecimal("0.01");
-        if (money.compareTo(bd) > 0) {
-            //deposit money
-            acc.setBalance(acc.getBalance().add(money));
+    public String depositFront(@RequestParam(value = "id") int id,
+                               @RequestParam(value = "money") BigDecimal money) {
+        Optional<account> optional = accountService.get(id);
+        if (optional.isPresent()) {
+            BigDecimal bd = new BigDecimal("0.01");
+            account acc = optional.get();
+            if (money.compareTo(bd) > 0) {
+                //deposit money
+                acc.setBalance(acc.getBalance().add(money));
 
-            //record in table of transaction
-            transaction_log transLog = new transaction_log();
-            int number = (int) transactionsService.count();
-            transLog.setId(++number);
-            transLog.setAccoundid(id);
-            transLog.setOtherid(id);
-            transLog.setSenderbankid(acc.getBankid());
-            transLog.setReceiverbankid(acc.getBankid());
-            transLog.setTr_money(money);
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            transLog.setDatetime(timestamp);
-            transLog.setTa_type(1);
-            transactionsService.update(transLog);
-            System.out.println(transLog);
+                //record in table of transaction
+                transaction_log transLog = new transaction_log();
+                int number = (int) transactionsService.count();
+                transLog.setId(++number);
+                transLog.setAccoundid(id);
+                transLog.setOtherid(id);
+                transLog.setSenderbankid(acc.getBankid());
+                transLog.setReceiverbankid(acc.getBankid());
+                transLog.setTr_money(money);
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                transLog.setDatetime(timestamp);
+                transLog.setTa_type(1);
+                transactionsService.update(transLog);
+                System.out.println(transLog);
 
-            return accountService.update(acc);
+                return accountService.update(acc).toString();
+            } else {
+                return "please verify your input money super than 0.01";
+            }
         }
-        return null;
+        return "please verify your input id";
     }
 
 
     //update account by id, choice 2 : withdraw money
     @PostMapping("/withdraw/{id}")
     @ResponseBody
-    public account withdraw(@PathVariable("id") Integer id,
-                            @RequestParam(value = "money") BigDecimal money) {
-        account acc = accountService.get(id);
-        if (acc.getBalance().compareTo(money) >= 0) {
-            //withdraw money from account
-            BigDecimal bd = acc.getBalance().subtract(money);
-            acc.setBalance(bd);
+    public String withdraw(@PathVariable("id") Integer id,
+                           @RequestParam(value = "money") BigDecimal money) {
+        Optional<account> optional = accountService.get(id);
+        if (optional.isPresent()) {
+            account acc = optional.get();
+            if (acc.getBalance().compareTo(money) >= 0) {
+                //withdraw money from account
+                BigDecimal bd = acc.getBalance().subtract(money);
+                acc.setBalance(bd);
 
-            //record in table of transaction
-            transaction_log transLog = new transaction_log();
-            int number = (int) transactionsService.count();
-            transLog.setId(++number);
-            transLog.setAccoundid(id);
-            transLog.setOtherid(id);
-            transLog.setSenderbankid(acc.getBankid());
-            transLog.setReceiverbankid(acc.getBankid());
-            transLog.setTr_money(money);
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            transLog.setDatetime(timestamp);
-            transLog.setTa_type(2);
-            transactionsService.update(transLog);
-            System.out.println(transLog);
+                //record in table of transaction
+                transaction_log transLog = new transaction_log();
+                int number = (int) transactionsService.count();
+                transLog.setId(++number);
+                transLog.setAccoundid(id);
+                transLog.setOtherid(id);
+                transLog.setSenderbankid(acc.getBankid());
+                transLog.setReceiverbankid(acc.getBankid());
+                transLog.setTr_money(money);
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                transLog.setDatetime(timestamp);
+                transLog.setTa_type(2);
+                transactionsService.update(transLog);
+                System.out.println(transLog);
 
-            return accountService.update(acc);
+                return accountService.update(acc).toString();
+            } else {
+                return "please verify your withdraw not overpass your solde";
+            }
         } else {
-            return null;
+            return "please verify your input id";
         }
+
     }
 
     @PostMapping("/withdraw")
     @ResponseBody
-    public account withdrawFront(@RequestParam(value = "id") int id,
-                            @RequestParam(value = "money") BigDecimal money) {
-        account acc = accountService.get(id);
-        if (acc.getBalance().compareTo(money) >= 0) {
-            //withdraw money from account
-            BigDecimal bd = acc.getBalance().subtract(money);
-            acc.setBalance(bd);
+    public String withdrawFront(@RequestParam(value = "id") int id,
+                                @RequestParam(value = "money") BigDecimal money) {
+        Optional<account> optional = accountService.get(id);
+        if (optional.isPresent()) {
+            account acc = optional.get();
+            if (acc.getBalance().compareTo(money) >= 0) {
+                //withdraw money from account
+                BigDecimal bd = acc.getBalance().subtract(money);
+                acc.setBalance(bd);
 
-            //record in table of transaction
-            transaction_log transLog = new transaction_log();
-            int number = (int) transactionsService.count();
-            transLog.setId(++number);
-            transLog.setAccoundid(id);
-            transLog.setOtherid(id);
-            transLog.setSenderbankid(acc.getBankid());
-            transLog.setReceiverbankid(acc.getBankid());
-            transLog.setTr_money(money);
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            transLog.setDatetime(timestamp);
-            transLog.setTa_type(2);
-            transactionsService.update(transLog);
-            System.out.println(transLog);
+                //record in table of transaction
+                transaction_log transLog = new transaction_log();
+                int number = (int) transactionsService.count();
+                transLog.setId(++number);
+                transLog.setAccoundid(id);
+                transLog.setOtherid(id);
+                transLog.setSenderbankid(acc.getBankid());
+                transLog.setReceiverbankid(acc.getBankid());
+                transLog.setTr_money(money);
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                transLog.setDatetime(timestamp);
+                transLog.setTa_type(2);
+                transactionsService.update(transLog);
+                System.out.println(transLog);
 
-            return accountService.update(acc);
+                return accountService.update(acc).toString();
+            } else {
+                return "please verify your withdraw not overpass your solde";
+            }
         } else {
-            return null;
+            return "please verify your input id";
         }
     }
 
@@ -263,84 +295,94 @@ public class AccountController {
     public String transfer(@PathVariable("id") Integer id,
                            @RequestParam(value = "money") BigDecimal money,
                            @RequestParam(value = "otherid") Integer otherid) {
-        account from = accountService.get(id);
-        account to = accountService.get(otherid);
+        Optional<account> acc1 = accountService.get(id);
+        Optional<account> acc2 = accountService.get(otherid);
 
-        if (from.getBalance().compareTo(money) >= 0 && accountService.get(otherid) != null) {
-            //record the money
-            BigDecimal bd = from.getBalance().subtract(money);
-            BigDecimal bd2 = to.getBalance().add(money);
+        if (acc1.isPresent() && acc2.isPresent()) {
+            account from = acc1.get();
+            account to = acc2.get();
+            if (from.getBalance().compareTo(money) >= 0) {
+                //record the money
+                BigDecimal bd = from.getBalance().subtract(money);
+                BigDecimal bd2 = to.getBalance().add(money);
 
-            //from acount substract money
-            from.setBalance(bd);
-            accountService.update(from);
-            System.out.println(from);
+                //from acount substract money
+                from.setBalance(bd);
+                accountService.update(from);
+                System.out.println(from);
 
-            //to account add money
-            to.setBalance(bd2);
-            accountService.update(to);
-            System.out.println(to);
+                //to account add money
+                to.setBalance(bd2);
+                accountService.update(to);
+                System.out.println(to);
 
-            // record in transaction table
-            transaction_log transLog = new transaction_log();
-            int number = (int) transactionsService.count();
-            transLog.setId(++number);
-            transLog.setAccoundid(id);
-            transLog.setOtherid(otherid);
-            transLog.setSenderbankid(from.getBankid());
-            transLog.setReceiverbankid(to.getBankid());
-            transLog.setTr_money(money);
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            transLog.setDatetime(timestamp);
-            transLog.setTa_type(3);
-            transactionsService.update(transLog);
+                // record in transaction table
+                transaction_log transLog = new transaction_log();
+                int number = (int) transactionsService.count();
+                transLog.setId(++number);
+                transLog.setAccoundid(id);
+                transLog.setOtherid(otherid);
+                transLog.setSenderbankid(from.getBankid());
+                transLog.setReceiverbankid(to.getBankid());
+                transLog.setTr_money(money);
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                transLog.setDatetime(timestamp);
+                transLog.setTa_type(3);
+                transactionsService.update(transLog);
 
-            return from.toString() + '\n' + to.toString() + '\n' + transLog.toString();
-        } else {
-            return "you can not transfer the money overpass your deposit";
+                return from.toString() + '\n' + to.toString() + '\n' + transLog.toString();
+            } else {
+                return "please verify your transfer money";
+            }
         }
+        return "please verify your input id";
     }
 
     @PostMapping("/transfer")
     @ResponseBody
     public String transferFront(@RequestParam(value = "id") Integer id,
-                           @RequestParam(value = "money") BigDecimal money,
-                           @RequestParam(value = "otherid") Integer otherid) {
-        account from = accountService.get(id);
-        account to = accountService.get(otherid);
+                                @RequestParam(value = "money") BigDecimal money,
+                                @RequestParam(value = "otherid") Integer otherid) {
+        Optional<account> acc1 = accountService.get(id);
+        Optional<account> acc2 = accountService.get(otherid);
 
-        if (from.getBalance().compareTo(money) >= 0 && accountService.get(otherid) != null) {
-            //record the money
-            BigDecimal bd = from.getBalance().subtract(money);
-            BigDecimal bd2 = to.getBalance().add(money);
+        if (acc1.isPresent() && acc2.isPresent()) {
+            account from = acc1.get();
+            account to = acc2.get();
+            if (from.getBalance().compareTo(money) >= 0) {
+                //record the money
+                BigDecimal bd = from.getBalance().subtract(money);
+                BigDecimal bd2 = to.getBalance().add(money);
 
-            //from acount substract money
-            from.setBalance(bd);
-            accountService.update(from);
-            System.out.println(from);
+                //from acount substract money
+                from.setBalance(bd);
+                accountService.update(from);
+                System.out.println(from);
 
-            //to account add money
-            to.setBalance(bd2);
-            accountService.update(to);
-            System.out.println(to);
+                //to account add money
+                to.setBalance(bd2);
+                accountService.update(to);
+                System.out.println(to);
 
-            // record in transaction table
-            transaction_log transLog = new transaction_log();
-            int number = (int) transactionsService.count();
-            transLog.setId(++number);
-            transLog.setAccoundid(id);
-            transLog.setOtherid(otherid);
-            transLog.setSenderbankid(from.getBankid());
-            transLog.setReceiverbankid(to.getBankid());
-            transLog.setTr_money(money);
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            transLog.setDatetime(timestamp);
-            transLog.setTa_type(3);
-            transactionsService.update(transLog);
+                // record in transaction table
+                transaction_log transLog = new transaction_log();
+                int number = (int) transactionsService.count();
+                transLog.setId(++number);
+                transLog.setAccoundid(id);
+                transLog.setOtherid(otherid);
+                transLog.setSenderbankid(from.getBankid());
+                transLog.setReceiverbankid(to.getBankid());
+                transLog.setTr_money(money);
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                transLog.setDatetime(timestamp);
+                transLog.setTa_type(3);
+                transactionsService.update(transLog);
 
-            return from.toString() + '\n' + to.toString() + '\n' + transLog.toString();
-        } else {
-            return "you can not transfer the money overpass your deposit";
+                return from.toString() + '\n' + to.toString() + '\n' + transLog.toString();
+            } else {
+                return "please verify your transfer money";
+            }
         }
+        return "please verify your input id";
     }
 }

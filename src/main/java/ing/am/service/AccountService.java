@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccountService  {
@@ -28,8 +29,8 @@ public class AccountService  {
         return repo.save(account);
     }
 
-    public account get(int accountid) {
-        return repo.findById(accountid).get();
+    public Optional<account> get(int accountid) {
+        return repo.findById(accountid);
     }
 
     public List<account> listbybank(int bankid) {
@@ -42,10 +43,6 @@ public class AccountService  {
 
     public List<account> listbyuserid(int userid) {
         return  repo.listbyuserid(userid);
-    }
-
-    public account findByAccountid(int accountid){
-        return  repo.findByAccountid(accountid);
     }
 
     public String findSoldeByAccountid(int accountid){

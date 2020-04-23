@@ -33,14 +33,14 @@ class AccountServiceTest {
     @Test
     public void testGetAccountById() {
         account except = new account(1,111111113,123456,new BigDecimal("120.00"),111,1);
-        account actual = accountService.get(1);
+        account actual = accountService.get(1).get();
         Assert.assertEquals("can not find account by id", except.toString(), actual.toString());
     }
 
 
     @Test
     public void testDepositMoney() {
-        account actual = accountService.get(1);
+        account actual = accountService.get(1).get();
         BigDecimal bd = new BigDecimal("1");
         actual.setBalance(actual.getBalance().add(bd));
         Assert.assertEquals("deposit money not right", new BigDecimal("121.00"),actual.getBalance());
@@ -48,7 +48,7 @@ class AccountServiceTest {
 
     @Test
     public void testWirthdrawMoney() {
-        account actual = accountService.get(1);
+        account actual = accountService.get(1).get();
         BigDecimal bd = new BigDecimal("1");
         actual.setBalance(actual.getBalance().subtract(bd));
         Assert.assertEquals("deposit money not right", new BigDecimal("119.00"),actual.getBalance());
@@ -56,13 +56,13 @@ class AccountServiceTest {
 
     @Test
     public void testConsultSoldeById(){
-        account actual = accountService.get(1);
+        account actual = accountService.get(1).get();
         Assert.assertEquals("successful consult solde", actual.getBalance(), new BigDecimal("116.00"));
     }
 
     @Test
     public void testTransfer(){
-        account actual = accountService.get(1);
+        account actual = accountService.get(1).get();
         actual.setBalance(new BigDecimal("119.00"));
         account after = accountService.update(actual);
         Assert.assertNotEquals("successful transfer ", actual, after);
