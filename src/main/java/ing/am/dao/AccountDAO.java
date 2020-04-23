@@ -16,8 +16,8 @@ public interface AccountDAO extends CrudRepository<account, Integer> {
     List<account> listbybank(int bankid);
 
     //query list accounts by userid
-    @Query("select acc from account acc where acc.userid = :userid")
-    List<account> listbyuserid(int userid);
+    @Query("select acc from account acc where acc.clientid = :clientid")
+    List<account> listbyuserid(int clientid);
 
     //query list accounts by userid
     @Query("select acc from account acc where acc.accountid = :accountid")

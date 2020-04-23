@@ -21,7 +21,7 @@ public class account {
     private int bankid;
 
     @Column(nullable = false)
-    private int userid;
+    private int clientid;
 
     public account() {
         super();
@@ -32,7 +32,7 @@ public class account {
         this.cardnumber = cardnumber;
         this.password = password;
         this.balance = balance;
-        this.userid = userid;
+        this.clientid = clientid;
         this.bankid = bankid;
     }
 
@@ -77,11 +77,11 @@ public class account {
     }
 
     public int getUserid() {
-        return userid;
+        return clientid;
     }
 
     public void setUserid(int userid) {
-        this.userid = userid;
+        this.clientid = userid;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class account {
                 ", password='" + password + '\'' +
                 ", balance=" + balance +
                 ", bankid=" + bankid +
-                ", userid=" + userid +
+                ", clientid=" + clientid +
                 '}';
     }
 }

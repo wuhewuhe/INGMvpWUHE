@@ -41,8 +41,8 @@ public class AccountService  {
         return  repo.count();
     }
 
-    public List<account> listbyuserid(int userid) {
-        return  repo.listbyuserid(userid);
+    public List<account> listbyuserid(int clientid) {
+        return  repo.listbyuserid(clientid);
     }
 
     public String findSoldeByAccountid(int accountid){

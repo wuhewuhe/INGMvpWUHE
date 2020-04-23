@@ -11,7 +11,7 @@ public class clients {
     private Integer id;
 
     @Column(nullable = false, unique = true)
-    private int userid;
+    private int clientid;
 
     @Column(nullable = false)
     private String realname;
@@ -20,27 +20,29 @@ public class clients {
     private int age;
 
     @Column(nullable = false)
-    private String sex;
+    private boolean sex;
 
-    @Column(nullable = false, unique = true)
-    private String passportID;
-    public clients(){
+    public clients() {
     }
-    public clients(int id, int userid, String realname, int age, String sex, String passportID){
+
+    public clients(int id, int clientid, String realname, int age, boolean sex) {
         this.id = id;
-        this.userid=userid;
-        this.realname=realname;
-        this.age=age;
-        this.sex=sex;
-        this.passportID=passportID;
+        this.clientid = clientid;
+        this.realname = realname;
+        this.age = age;
+        this.sex = sex;
     }
 
-    public int getUserid() {
-        return userid;
+    public int getClientid() {
+        return clientid;
     }
 
-    public void setUserid(int userid) {
-        this.userid = userid;
+    public void setClientid(int clientid) {
+        this.clientid = clientid;
+    }
+
+    public boolean isSex() {
+        return sex;
     }
 
     public Integer getId() {
@@ -51,10 +53,6 @@ public class clients {
         this.id = id;
     }
 
-
-    public String getRealname() {
-        return realname;
-    }
 
     public void setRealname(String realname) {
         this.realname = realname;
@@ -68,31 +66,19 @@ public class clients {
         this.age = age;
     }
 
-    public String getSex() {
-        return sex;
-    }
 
-    public void setSex(String sex) {
+    public void setSex(boolean sex) {
         this.sex = sex;
-    }
-
-    public String getPassportID() {
-        return passportID;
-    }
-
-    public void setPassportID(String passportID) {
-        this.passportID = passportID;
     }
 
     @Override
     public String toString() {
         return "clients{" +
                 "id=" + id +
-                ", userid=" + userid +
+                ", clientid=" + clientid +
                 ", realname='" + realname + '\'' +
                 ", age=" + age +
-                ", sex='" + sex + '\'' +
-                ", passportID='" + passportID + '\'' +
+                ", sex='" + (sex ? "male" : "female") + '\'' +
                 '}';
     }
 }

@@ -1,10 +1,10 @@
 package ing.am.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import ing.am.bean.account;
 import ing.am.bean.transaction_log;
 import ing.am.service.AccountService;
 import ing.am.service.BankService;
+import ing.am.service.ClientService;
 import ing.am.service.TransactionsService;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
@@ -27,10 +27,13 @@ public class AccountController {
 
     private final BankService bankService;
 
-    public AccountController(AccountService accountService, TransactionsService transactionsService, BankService bankService) {
+    private final ClientService clientService;
+
+    public AccountController(AccountService accountService, TransactionsService transactionsService, BankService bankService, ClientService clientService) {
         this.accountService = accountService;
         this.transactionsService = transactionsService;
         this.bankService = bankService;
+        this.clientService = clientService;
     }
 
 
@@ -59,35 +62,35 @@ public class AccountController {
     //list all accounts by userid
     @GetMapping("/listbyuser/{userid}")
     @ResponseBody
-    public List<account> listbyuser(@PathVariable("userid") Integer userid) {
-        return accountService.listbyuserid(userid);
+    public List<account> listbyuser(@PathVariable("clientid") Integer clientid) {
+        return accountService.listbyuserid(clientid);
     }
 
     @GetMapping("/listbyuser")
     @ResponseBody
-    public List<account> listbyuserfront(@RequestParam(value = "userid") Integer userid) {
-        return accountService.listbyuserid(userid);
+    public List<account> listbyuserfront(@RequestParam(value = "clientid") Integer clientid) {
+        return accountService.listbyuserid(clientid);
     }
 
 
     //create account
     @PostMapping("/create")
     @ResponseBody
-    public account create(@RequestParam(value = "cardnumber") Integer cardnumber,
+    public String create(@RequestParam(value = "cardnumber") Integer cardnumber,
                           @RequestParam(value = "password") Integer password,
                           @RequestParam(value = "balance", required = false, defaultValue = "0") BigDecimal balance,
-                          @RequestParam(value = "userid") int userid,
+                          @RequestParam(value = "clientid") int clientid,
                           @RequestParam(value = "bankid") Integer bankid) {
         account acc = new account();
-        if (balance.compareTo(BigDecimal.ZERO) > 0 && bankService.get(bankid) != null) {
+        if (balance.compareTo(BigDecimal.ZERO) > 0 && bankService.get(bankid) != null && clientService.get(clientid) != null) {
             acc.setBalance(balance);
             acc.setCardnumber(cardnumber);
-            acc.setUserid(userid);
+            acc.setUserid(clientid);
             acc.setPassword(password);
             acc.setBankid(bankid);
-            return accountService.update(acc);
+            return accountService.update(acc).toString();
         }
-        return null;
+        return "please verify your input money or bank id or client id";
     }
 
     //update account

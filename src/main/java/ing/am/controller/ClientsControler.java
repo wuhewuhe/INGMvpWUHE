@@ -1,13 +1,12 @@
 package ing.am.controller;
 
+import ing.am.bean.bank;
 import ing.am.bean.clients;
 import ing.am.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,4 +31,18 @@ public class ClientsControler {
         return clientService.get(id);
     }
 
+    //create bank
+    @PostMapping("/create")
+    @ResponseBody
+    public clients create(@RequestParam(value = "age") Integer age,
+                       @RequestParam(value = "clientid") Integer clientid,
+                       @RequestParam(value = "sex") Boolean sex,
+                       @RequestParam(value = "realname") String realname) {
+        clients client = new clients();
+        client.setAge(age);
+        client.setRealname(realname);
+        client.setSex(sex);
+        client.setClientid(clientid);
+        return clientService.update(client);
+    }
 }
