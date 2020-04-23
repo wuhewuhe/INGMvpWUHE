@@ -38,8 +38,8 @@ public class TransactionsService {
         return repo.count();
     }
 
-    public List<transaction_log> findByReceiverId(Integer idaccount) {
-        return repo.findByReceiverId(idaccount);
+    public List<transaction_log> findByReceiverId(Integer otherid) {
+        return repo.findByReceiverId(otherid);
     }
 
     public List<transaction_log> findByTransType(Integer ta_type) {

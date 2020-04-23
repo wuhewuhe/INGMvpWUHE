@@ -76,12 +76,12 @@ public class account {
         this.bankid = bankid;
     }
 
-    public int getUserid() {
+    public int getClientid() {
         return clientid;
     }
 
-    public void setUserid(int userid) {
-        this.clientid = userid;
+    public void setClientid(int clientid) {
+        this.clientid = clientid;
     }
 
     @Override

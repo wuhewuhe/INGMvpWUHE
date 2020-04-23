@@ -10,10 +10,60 @@ Welcom to ING Account Management
 </br>
 <a href="/ING/accounts/listall"><button>list all accounts</button></a>
 </br>
+</br>
+<a href="/ING/bank/listall"><button>list all bank</button></a>
+</br>
+</br>
+<a href="/ING/clients/listall"><button>list all clients</button></a>
+</br>
+</br>
+<a href="/ING/transactions/listAll"><button>check all transactions</button></a>
+</br>
+
+<h2>create bank</h2>
+<form method="POST" action="/ING/bank/create">
+    <label>intput bank name</label><br>
+    <input type="text" name="bankname" value="ing"><br>
+    <label>intput bank adress</label><br>
+    <input type="text" name="adress" value="paris"><br>
+    <input type="submit" value="Submit" >
+</form>
+</br>
+
+<h2>create client</h2>
+<form method="POST" action="/ING/clients/create">
+    <label>intput client age</label><br>
+    <input type="text" name="age" value="24"><br>
+    <label>intput client realname</label><br>
+    <input type="text" name="realname" value="wuhe"><br>
+    <label>intput client sex</label><br>
+    <input type="text" name="sex" value="true"><br>
+    <label>intput client clientid</label><br>
+    <input type="text" name="clientid" value="1"><br>
+    <input type="submit" value="Submit" >
+</form>
+</br>
+
+<h2>create account</h2>
+<form method="POST" action="/ING/accounts/create">
+    <label>intput account balance</label><br>
+    <input type="text" name="balance" value="100"><br>
+    <label>intput account password</label><br>
+    <input type="text" name="password" value="1234"><br>
+    <label>intput account clientid</label><br>
+    <input type="text" name="clientid" value="1"><br>
+    <label>intput account bankid</label><br>
+    <input type="text" name="bankid" value="1"><br>
+    <label>intput account cardnumber</label><br>
+    <input type="text" name="cardnumber" value="11111111"><br>
+    <input type="submit" value="Submit" >
+</form>
+</br>
+
 <h2>check accounts by client id</h2>
 <form action="/ING/accounts/listbyuser" method="GET">
     <label>intput cliend id</label><br>
-    <input type="text" id="userid" name="userid" value="444"><br>
+    <input type="text" id="clientid" name="clientid" value="1"><br>
     <input type="submit" value="Submit">
 </form>
 </br>
@@ -24,7 +74,6 @@ Welcom to ING Account Management
     <input type="submit" value="Submit">
 </form>
 </br>
-<a href="/ING/transactions/listAll"><button>check all transactions</button></a>
 </br>
 <h2>find constraction by send id</h2>
 <form action="/ING/transactions/findBySenderId" method="GET">
@@ -36,7 +85,7 @@ Welcom to ING Account Management
 <h2>find constraction by receive id</h2>
 <form action="/ING/transactions/findByReceiverId" method="GET">
     <label>intput account id</label><br>
-    <input type="text" name="idaccount" value="1"><br>
+    <input type="text" name="otherid" value="1"><br>
     <input type="submit" value="Submit">
 </form>
 </br>
@@ -53,7 +102,7 @@ Welcom to ING Account Management
     <input type="text" name="id" value="1"><br>
     <label>intput money</label><br>
     <input type="text" name="money" value="100.00"><br>
-    <input type="submit" value="Submit" method="PUT">
+    <input type="submit" value="Submit" >
 </form>
 </br>
 <h2>withdraw money</h2>
@@ -62,7 +111,7 @@ Welcom to ING Account Management
     <input name="id" value="1"><br>
     <label>intput money</label><br>
     <input type="text" name="money" value="100.00"><br>
-    <input type="submit" value="Submit" method="PUT">
+    <input type="submit" value="Submit" >
 </form>
 </br>
 <h2>transfer money</h2>

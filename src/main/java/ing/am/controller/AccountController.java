@@ -60,7 +60,7 @@ public class AccountController {
     }
 
     //list all accounts by userid
-    @GetMapping("/listbyuser/{userid}")
+    @GetMapping("/listbyuser/{clientid}")
     @ResponseBody
     public List<account> listbyuser(@PathVariable("clientid") Integer clientid) {
         return accountService.listbyuserid(clientid);
@@ -85,7 +85,7 @@ public class AccountController {
         if (balance.compareTo(BigDecimal.ZERO) > 0 && bankService.get(bankid) != null && clientService.get(clientid) != null) {
             acc.setBalance(balance);
             acc.setCardnumber(cardnumber);
-            acc.setUserid(clientid);
+            acc.setClientid(clientid);
             acc.setPassword(password);
             acc.setBankid(bankid);
             return accountService.update(acc).toString();

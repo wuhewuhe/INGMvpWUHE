@@ -42,16 +42,16 @@ public class TransactionController {
     //find constraction by receive id
     @GetMapping("/findByReceiverId/{idaccount}")
     @ResponseBody
-    public List<transaction_log> findByReceiverId(@PathVariable("idaccount") Integer idaccount) {
-        List<transaction_log> list = transactionsService.findByReceiverId(idaccount);
+    public List<transaction_log> findByReceiverId(@PathVariable("otherid") Integer otherid) {
+        List<transaction_log> list = transactionsService.findByReceiverId(otherid);
         return list;
     }
 
     //find constraction by receive id
     @GetMapping("/findByReceiverId")
     @ResponseBody
-    public List<transaction_log> findByReceiverId(@RequestParam(value = "idaccount") int idaccount) {
-        List<transaction_log> list = transactionsService.findByReceiverId(idaccount);
+    public List<transaction_log> findByReceiverId(@RequestParam(value = "otherid") int otherid) {
+        List<transaction_log> list = transactionsService.findByReceiverId(otherid);
         return list;
     }
 

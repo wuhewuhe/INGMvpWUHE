@@ -22,11 +22,13 @@ public class ClientsControler {
     }
 
     @GetMapping("/listall")
+    @ResponseBody
     public List<clients> listAll(){
         return clientService.listAll();
     }
 
     @GetMapping("/findById/{id}")
+    @ResponseBody
     public clients findById(@PathVariable("id") Integer id){
         return clientService.get(id);
     }
